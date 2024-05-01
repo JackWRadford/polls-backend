@@ -1,22 +1,26 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { Db, MongoClient, ServerApiVersion } from "mongodb";
 
-export async function connectToCluster(uri: string): Promise<MongoClient> {
-    console.log('uri: ', uri)
-    const mongoClient = new MongoClient(uri, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true
-        }
-    })
-    
-    try {
-        console.log('Connecting to MongoDB Atlas cluster...')
-        await mongoClient.connect()
-        console.log('Successfully connected to MongoDB Atlas!')
-        return mongoClient
-    } catch (error) {
-        console.log('Connection to MongoDB Atlas failed!', error)
-        process.exit()
-    }
+const uri = process.env.DB_URI || "";
+
+// Initialize mongodb client.
+const mongoClient = new MongoClient(uri, {
+	serverApi: {
+		version: ServerApiVersion.v1,
+		strict: true,
+		deprecationErrors: true,
+	},
+});
+
+let db: Db;
+
+// Connect to the mongodb client, and if successful, the database.
+try {
+	console.log("Connecting to MongoDB Atlas cluster...");
+	await mongoClient.connect();
+	console.log("Successfully connected to MongoDB Atlas!");
+	db = mongoClient.db(process.env.DB_NAME);
+} catch (error) {
+	console.log("Connection to MongoDB Atlas failed!", error);
 }
+
+export default db;
