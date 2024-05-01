@@ -2,6 +2,7 @@ import { Option } from "../models/poll.js";
 import { Poll } from "../models/poll.js";
 import db from "../db/connection.js";
 import { Request, Response } from "express";
+import { ObjectId } from "mongodb";
 
 export async function createPoll(req: Request, res: Response) {
 	const { title, options, endsAt } = req.body;
@@ -35,6 +36,23 @@ export async function createPoll(req: Request, res: Response) {
 	}
 }
 
-export async function getPoll(req: Request, res: Response) {}
+export async function getPoll(req: Request, res: Response) {
+	const pollId = req.params.id;
+
+	try {
+		const query = { _id: new ObjectId(pollId) };
+		const poll = await db.collection("polls").findOne(query);
+		// Check if a poll was found.
+		if (!poll) {
+			return res.status(404).send({ message: "Poll not found." });
+		}
+		res.status(200).send(poll);
+	} catch (error) {
+		res.status(500).send({
+			message: "An Error occured while fetching the poll.",
+		});
+	}
+}
+
 export async function getPollResults(req: Request, res: Response) {}
 export async function voteInPoll(req: Request, res: Response) {}
