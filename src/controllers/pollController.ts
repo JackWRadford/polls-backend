@@ -54,7 +54,31 @@ export async function getPoll(req: Request, res: Response) {
 	}
 }
 
-export async function getPollResults(req: Request, res: Response) {}
+export async function getPollResults(req: Request, res: Response) {
+	const pollId = req.params.id;
+
+	try {
+		const poll = await getPollForId(pollId);
+
+		// Aggregate votes for each option.
+		const aggregationPipeline = [
+			{ $match: { poll_id: new ObjectId(pollId) } },
+			{ $group: { _id: "$optionId", count: { $sum: 1 } } }, // Group votes by optionId and sum them.
+			{ $project: { _id: 0, optionId: "$_id", count: 1 } }, // Remove the _id field and use it's value for the optionId field.
+		];
+
+		const pollResults = (await db
+			.collection("votes")
+			.aggregate(aggregationPipeline)
+			.toArray()) as { optionId: string; count: number }[];
+
+		res.status(200).send(pollResults);
+	} catch (error) {
+		res.status(500).send({
+			message: "An Error occurred while fetching the poll results.",
+		});
+	}
+}
 
 export async function voteInPoll(req: Request, res: Response) {
 	const pollId = req.params.id;
