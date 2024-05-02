@@ -81,6 +81,7 @@ export async function getPollResults(req: Request, res: Response) {
 }
 
 export async function voteInPoll(req: Request, res: Response) {
+	const clientIp = req.socket.remoteAddress;
 	const pollId = req.params.id;
 	const { optionId } = req.body;
 
@@ -97,13 +98,22 @@ export async function voteInPoll(req: Request, res: Response) {
 			return res.status(400).send({ message: "Invalid option." });
 		}
 
-		// TODO: Check if the user has already votes (based on their ip).
+		// Check for the clientIp in any existing Votes.
+		const voteWithClientIp = await db
+			.collection("votes")
+			.findOne({ clientIp: clientIp });
+		if (voteWithClientIp) {
+			return res
+				.status(403)
+				.send({ message: "You can only vote once in this poll." });
+		}
 
 		// Create the Vote object.
 		const voteDocument: Partial<Vote> = {
 			poll_id: poll._id,
 			optionId: option.id,
 			createdAt: new Date(),
+			clientIp: clientIp,
 		};
 		// Insert the document.
 		let result = await db.collection("votes").insertOne(voteDocument);

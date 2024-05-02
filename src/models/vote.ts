@@ -5,6 +5,7 @@ interface Vote {
 	poll_id: ObjectId;
 	optionId: string;
 	createdAt: Date;
+	clientIp?: string;
 }
 
 export { Vote };
