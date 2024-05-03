@@ -40,7 +40,7 @@ export async function createPoll(req: Request, res: Response) {
 }
 
 export async function getPoll(req: Request, res: Response) {
-	const pollId = req.params.id;
+	const { id: pollId } = matchedData(req);
 
 	try {
 		const poll = await getPollForId(pollId);

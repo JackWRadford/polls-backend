@@ -1,7 +1,7 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 
 // CreatePoll Validation.
-export const validateCreate = () => [
+export const validateCreatePoll = () => [
 	body("title")
 		.isString()
 		.withMessage("The title must be a string.")
@@ -25,4 +25,9 @@ export const validateCreate = () => [
 		.optional()
 		.isDate()
 		.withMessage("The end at date must be a Date."),
+];
+
+// getPoll Valifation.
+export const validateGetPoll = () => [
+	param("id").isMongoId().withMessage("Invalid Poll id."),
 ];
