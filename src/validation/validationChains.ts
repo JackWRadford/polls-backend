@@ -27,7 +27,16 @@ export const validateCreatePoll = () => [
 		.withMessage("The end at date must be a Date."),
 ];
 
-// getPoll Valifation.
-export const validateGetPoll = () => [
+export const validateMongoIdInParams = () => [
 	param("id").isMongoId().withMessage("Invalid Poll id."),
+];
+
+export const validateVote = () => [
+	body("optionId")
+		.isString()
+		.withMessage("The option id must be a string.")
+		.trim()
+		.isLength({ min: 1, max: 2 })
+		.withMessage("The option id must be 1 to 2 characters in length.")
+		.escape(),
 ];

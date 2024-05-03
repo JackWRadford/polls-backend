@@ -57,7 +57,7 @@ export async function getPoll(req: Request, res: Response) {
 }
 
 export async function getPollResults(req: Request, res: Response) {
-	const pollId = req.params.id;
+	const { id: pollId } = matchedData(req);
 
 	try {
 		const poll = await getPollForId(pollId);
@@ -84,8 +84,12 @@ export async function getPollResults(req: Request, res: Response) {
 
 export async function voteInPoll(req: Request, res: Response) {
 	const clientIp = req.socket.remoteAddress;
-	const pollId = req.params.id;
-	const { optionId } = req.body;
+	const { id: pollId, optionId } = matchedData(req);
+
+	// Check the length of the IP address.
+	if (clientIp.length > 45) {
+		return res.send(400).send("Invalid IP length.");
+	}
 
 	try {
 		// Check if the poll exists.

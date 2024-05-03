@@ -8,15 +8,27 @@ import {
 import { checkValidationResult } from "../validation/validation.js";
 import {
 	validateCreatePoll,
-	validateGetPoll,
+	validateMongoIdInParams,
+	validateVote,
 } from "../validation/validationChains.js";
 
 const router = express.Router();
 
 // Routes
 router.post("/create", validateCreatePoll(), checkValidationResult, createPoll);
-router.get("/:id", validateGetPoll(), checkValidationResult, getPoll);
-router.get("/:id/results", getPollResults);
-router.post("/:id/vote", voteInPoll);
+router.get("/:id", validateMongoIdInParams(), checkValidationResult, getPoll);
+router.get(
+	"/:id/results",
+	validateMongoIdInParams(),
+	checkValidationResult,
+	getPollResults
+);
+router.post(
+	"/:id/vote",
+	validateMongoIdInParams(),
+	validateVote(),
+	checkValidationResult,
+	voteInPoll
+);
 
 export default router;
