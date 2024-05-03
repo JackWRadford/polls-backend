@@ -4,12 +4,14 @@ import db from "../db/connection.js";
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { Vote } from "../models/vote.js";
+import { matchedData } from "express-validator";
 
 export async function createPoll(req: Request, res: Response) {
-	const { title, options, endsAt } = req.body;
+	// Destruct validated request data.
+	const { title, options, endsAt } = matchedData(req);
 
 	// Create options array with ids.
-	const optionsWithIds: Option[] = options.map(
+	const optionsWithIds: Option[] = options?.map(
 		(option: string, index: number) => ({
 			id: index.toString(),
 			title: option,
@@ -98,10 +100,10 @@ export async function voteInPoll(req: Request, res: Response) {
 			return res.status(400).send({ message: "Invalid option." });
 		}
 
-		// Check for the clientIp in any existing Votes.
+		// Check for the clientIp in any existing Votes relating to the poll.
 		const voteWithClientIp = await db
 			.collection("votes")
-			.findOne({ clientIp: clientIp });
+			.findOne({ poll_id: new ObjectId(pollId), clientIp: clientIp });
 		if (voteWithClientIp) {
 			return res
 				.status(403)
