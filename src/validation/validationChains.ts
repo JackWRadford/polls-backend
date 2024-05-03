@@ -6,8 +6,8 @@ export const validateCreatePoll = () => [
 		.isString()
 		.withMessage("The title must be a string.")
 		.trim()
-		.notEmpty()
-		.withMessage("The Title must not be empty.")
+		.isLength({ min: 1, max: 1000 })
+		.withMessage("The Title must be 1 to 1000 characters in length.")
 		.escape(),
 
 	body("options")
