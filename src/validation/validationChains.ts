@@ -10,8 +10,8 @@ export const validateCreatePoll = () => [
 		.withMessage("The Title must be 1 to 1000 characters in length."),
 
 	body("options")
-		.isArray({ min: 2, max: 10 })
-		.withMessage("There must be 2 to 10 options."),
+		.isArray({ min: 2, max: 30 })
+		.withMessage("There must be 2 to 30 options."),
 	body("options.*")
 		.isString()
 		.withMessage("The Answers must be strings.")
