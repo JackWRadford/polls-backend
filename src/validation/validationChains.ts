@@ -7,8 +7,7 @@ export const validateCreatePoll = () => [
 		.withMessage("The title must be a string.")
 		.trim()
 		.isLength({ min: 1, max: 1000 })
-		.withMessage("The Title must be 1 to 1000 characters in length.")
-		.escape(),
+		.withMessage("The Title must be 1 to 1000 characters in length."),
 
 	body("options")
 		.isArray({ min: 2, max: 10 })
@@ -18,8 +17,7 @@ export const validateCreatePoll = () => [
 		.withMessage("The Answers must be strings.")
 		.trim()
 		.isLength({ min: 1, max: 280 })
-		.withMessage("The Answers must be 1 to 180 characters in length.")
-		.escape(),
+		.withMessage("The Answers must be 1 to 180 characters in length."),
 
 	body("endAt")
 		.optional()
@@ -37,6 +35,5 @@ export const validateVote = () => [
 		.withMessage("The option id must be a string.")
 		.trim()
 		.isLength({ min: 1, max: 2 })
-		.withMessage("The option id must be 1 to 2 characters in length.")
-		.escape(),
+		.withMessage("The option id must be 1 to 2 characters in length."),
 ];
