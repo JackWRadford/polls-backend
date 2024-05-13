@@ -2,11 +2,13 @@ import "./loadEnv.js";
 import polls from "./routes/polls.js";
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 
 const app = express();
 
 // Configure Express Middleware
 app.use(express.json());
+app.use(helmet());
 // Configure CORS
 const corsOptions = {
 	origin: process.env.FRONTEND_ORIGIN,
