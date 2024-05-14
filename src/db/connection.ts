@@ -11,7 +11,7 @@ const mongoClient = new MongoClient(uri, {
 	},
 });
 
-let db: Db;
+let db: Db | undefined;
 
 // Connect to the mongodb client, and if successful, the database.
 try {
