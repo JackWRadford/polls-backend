@@ -74,8 +74,37 @@ export async function getPollResults(req: Request, res: Response) {
 			.aggregate(aggregationPipeline)
 			.toArray()) as { optionId: string; count: number }[];
 
-		res.status(200).send(pollResults);
+		// Calculate the total vote count
+		const totalVoteCount = pollResults.reduce((count, pollResult) => {
+			return count + pollResult.count;
+		}, 0);
+
+		// Create an array with the option title, vote count, and vote percentage
+		let pollResultsData: {
+			optionTitle: string;
+			count: number;
+			percentage: number;
+		}[] = [];
+		if (totalVoteCount > 0) {
+			poll.options.forEach((option) => {
+				const voteCount =
+					pollResults.find((res) => res.optionId == option.id)
+						?.count ?? 0;
+				pollResultsData.push({
+					optionTitle: option.title,
+					count: voteCount,
+					percentage: Math.round((voteCount / totalVoteCount) * 100),
+				});
+			});
+		}
+
+		res.status(200).send({
+			poll,
+			pollResultsData,
+			totalVoteCount,
+		});
 	} catch (error) {
+		console.error("Error: Results fetch.", error);
 		res.status(500).send({
 			message: "An Error occurred while fetching the poll results.",
 		});
@@ -87,7 +116,7 @@ export async function voteInPoll(req: Request, res: Response) {
 	const { id: pollId, optionId } = matchedData(req);
 
 	// Check the length of the IP address.
-	if (clientIp.length > 45) {
+	if (clientIp && clientIp.length > 45) {
 		return res.send(400).send("Invalid IP length.");
 	}
 
