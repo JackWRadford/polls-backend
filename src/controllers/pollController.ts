@@ -91,18 +91,20 @@ export async function getPollResults(req: Request, res: Response) {
 			count: number;
 			percentage: number;
 		}[] = [];
-		if (totalVoteCount > 0) {
-			poll?.options.forEach((option) => {
-				const voteCount =
-					pollResults.find((res) => res.optionId == option.id)
-						?.count ?? 0;
-				pollResultsData.push({
-					optionTitle: option.title,
-					count: voteCount,
-					percentage: Math.round((voteCount / totalVoteCount) * 100),
-				});
+		poll?.options.forEach((option) => {
+			const voteCount =
+				pollResults.find((res) => res.optionId == option.id)?.count ??
+				0;
+			const percentage =
+				voteCount > 0 && totalVoteCount > 0
+					? Math.round((voteCount / totalVoteCount) * 100)
+					: 0;
+			pollResultsData.push({
+				optionTitle: option.title,
+				count: voteCount,
+				percentage: percentage,
 			});
-		}
+		});
 
 		res.status(200).send({
 			poll,
@@ -142,15 +144,15 @@ export async function voteInPoll(req: Request, res: Response) {
 			return res.status(400).send({ message: "Invalid option." });
 		}
 
-		// Check for the clientIp in any existing Votes relating to the poll.
-		const voteWithClientIp = await db
-			.collection("votes")
-			.findOne({ poll_id: new ObjectId(pollId), clientIp: clientIp });
-		if (voteWithClientIp) {
-			return res
-				.status(403)
-				.send({ message: "You can only vote once in this poll." });
-		}
+		// // Check for the clientIp in any existing Votes relating to the poll.
+		// const voteWithClientIp = await db
+		// 	.collection("votes")
+		// 	.findOne({ poll_id: new ObjectId(pollId), clientIp: clientIp });
+		// if (voteWithClientIp) {
+		// 	return res
+		// 		.status(403)
+		// 		.send({ message: "You can only vote once in this poll." });
+		// }
 
 		// Create the Vote object.
 		const voteDocument: Partial<Vote> = {
