@@ -59,6 +59,27 @@ export async function getPoll(req: Request, res: Response) {
 	}
 }
 
+export async function getPolls(req: Request, res: Response) {
+	const { page } = matchedData(req);
+	const pageSize = 10;
+
+	try {
+		const polls = await db
+			?.collection("polls")
+			.find()
+			.sort({ createdAt: -1 })
+			.skip((page - 1) * pageSize)
+			.limit(pageSize)
+			.toArray();
+
+		res.status(200).send(polls);
+	} catch (error) {
+		res.status(500).send({
+			message: "An Error occured while fetching the polls",
+		});
+	}
+}
+
 export async function getPollResults(req: Request, res: Response) {
 	const { id: pollId } = matchedData(req);
 

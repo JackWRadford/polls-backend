@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 
 // CreatePoll Validation.
 export const validateCreatePoll = () => [
@@ -27,6 +27,13 @@ export const validateCreatePoll = () => [
 
 export const validateMongoIdInParams = () => [
 	param("id").isMongoId().withMessage("Invalid Poll id."),
+];
+
+export const validatePagination = () => [
+	query("page")
+		.default(1)
+		.isInt({ min: 1 })
+		.withMessage("Page must be a positive integer."),
 ];
 
 export const validateVote = () => [

@@ -3,12 +3,14 @@ import {
 	createPoll,
 	getPoll,
 	getPollResults,
+	getPolls,
 	voteInPoll,
 } from "../controllers/pollController.js";
 import { checkValidationResult } from "../validation/validation.js";
 import {
 	validateCreatePoll,
 	validateMongoIdInParams,
+	validatePagination,
 	validateVote,
 } from "../validation/validationChains.js";
 
@@ -30,5 +32,6 @@ router.post(
 	checkValidationResult,
 	voteInPoll
 );
+router.get("/", validatePagination(), checkValidationResult, getPolls);
 
 export default router;
