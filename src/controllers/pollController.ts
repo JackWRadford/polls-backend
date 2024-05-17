@@ -72,7 +72,8 @@ export async function getPolls(req: Request, res: Response) {
 			.limit(pageSize)
 			.toArray();
 
-		res.status(200).send(polls);
+		const thereAreMorePolls = polls?.length === pageSize;
+		res.status(200).send({ polls, thereAreMorePolls });
 	} catch (error) {
 		res.status(500).send({
 			message: "An Error occured while fetching the polls",
