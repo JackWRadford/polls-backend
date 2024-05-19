@@ -60,8 +60,9 @@ export async function getPoll(req: Request, res: Response) {
 }
 
 export async function getPolls(req: Request, res: Response) {
-	const { page } = matchedData(req);
-	const pageSize = 10;
+	let { page, pageSize } = matchedData(req);
+	pageSize = parseInt(pageSize, 10);
+	page = parseInt(page, 10);
 
 	try {
 		const polls = await db
@@ -72,9 +73,10 @@ export async function getPolls(req: Request, res: Response) {
 			.limit(pageSize)
 			.toArray();
 
-		const thereAreMorePolls = polls?.length === pageSize;
+		const thereAreMorePolls = polls?.length == pageSize;
 		res.status(200).send({ polls, thereAreMorePolls });
 	} catch (error) {
+		console.error(error);
 		res.status(500).send({
 			message: "An Error occured while fetching the polls",
 		});

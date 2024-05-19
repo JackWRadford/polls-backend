@@ -34,6 +34,10 @@ export const validatePagination = () => [
 		.default(1)
 		.isInt({ min: 1 })
 		.withMessage("Page must be a positive integer."),
+	query("pageSize")
+		.default(10)
+		.isInt({ min: 1, max: 30 })
+		.withMessage("Page size must be an integer between 1 and 30."),
 ];
 
 export const validateVote = () => [
