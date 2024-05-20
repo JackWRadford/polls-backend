@@ -59,7 +59,7 @@ export async function getPoll(req: Request, res: Response) {
 	}
 }
 
-export async function getPolls(req: Request, res: Response) {
+export async function getExamplePolls(req: Request, res: Response) {
 	let { page, pageSize } = matchedData(req);
 	pageSize = parseInt(pageSize, 10);
 	page = parseInt(page, 10);
@@ -67,7 +67,7 @@ export async function getPolls(req: Request, res: Response) {
 	try {
 		const polls = await db
 			?.collection("polls")
-			.find()
+			.find({ isExample: true })
 			.sort({ createdAt: -1 })
 			.skip((page - 1) * pageSize)
 			.limit(pageSize)
@@ -78,7 +78,7 @@ export async function getPolls(req: Request, res: Response) {
 	} catch (error) {
 		console.error(error);
 		res.status(500).send({
-			message: "An Error occured while fetching the polls",
+			message: "An Error occured while fetching the example polls",
 		});
 	}
 }

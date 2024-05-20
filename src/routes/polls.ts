@@ -1,9 +1,9 @@
 import express from "express";
 import {
 	createPoll,
+	getExamplePolls,
 	getPoll,
 	getPollResults,
-	getPolls,
 	voteInPoll,
 } from "../controllers/pollController.js";
 import { checkValidationResult } from "../validation/validation.js";
@@ -18,6 +18,12 @@ const router = express.Router();
 
 // Routes
 router.post("/create", validateCreatePoll(), checkValidationResult, createPoll);
+router.get(
+	"/examples",
+	validatePagination(),
+	checkValidationResult,
+	getExamplePolls
+);
 router.get("/:id", validateMongoIdInParams(), checkValidationResult, getPoll);
 router.get(
 	"/:id/results",
@@ -32,6 +38,5 @@ router.post(
 	checkValidationResult,
 	voteInPoll
 );
-router.get("/", validatePagination(), checkValidationResult, getPolls);
 
 export default router;

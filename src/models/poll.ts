@@ -11,6 +11,7 @@ interface Poll {
 	options: Option[];
 	createdAt: Date;
 	endsAt: Date;
+	isExample?: boolean;
 }
 
 export { Poll, Option };
