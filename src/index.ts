@@ -20,6 +20,9 @@ app.use(cors(corsOptions));
 app.use("/polls", polls);
 
 const port = process.env.PORT || 3000;
+
 app.listen(port, () => {
 	console.log(`Server listening at port: ${port}`);
 });
+
+export default app;
