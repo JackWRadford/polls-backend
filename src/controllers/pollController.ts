@@ -145,6 +145,7 @@ export async function getPollResults(req: Request, res: Response) {
 
 export async function voteInPoll(req: Request, res: Response) {
 	const clientIp = req.socket.remoteAddress;
+	console.log("ClientIP:", clientIp);
 	const { id: pollId, optionId } = matchedData(req);
 
 	// Check the length of the IP address.
