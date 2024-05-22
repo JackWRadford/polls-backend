@@ -144,8 +144,20 @@ export async function getPollResults(req: Request, res: Response) {
 }
 
 export async function voteInPoll(req: Request, res: Response) {
-	const clientIp = req.socket.remoteAddress;
-	console.log("ClientIP:", clientIp);
+	// Get the client IP
+	let clientIp =
+		req.headers["x-real-ip"] ||
+		req.headers["x-forwarded-for"] ||
+		req.socket.remoteAddress ||
+		"";
+	// Make sure that the clientIp is a string with a single IP address.
+	if (typeof clientIp === "string" && clientIp.includes(",")) {
+		clientIp = clientIp.split(",")[0].trim();
+	}
+	if (Array.isArray(clientIp)) {
+		clientIp = (clientIp as Array<string>)[0].trim();
+	}
+
 	const { id: pollId, optionId } = matchedData(req);
 
 	// Check the length of the IP address.
