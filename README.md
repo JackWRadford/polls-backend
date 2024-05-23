@@ -1,3 +1,3 @@
-### Polls Backend
+### PollMaker Backend
 
-Built with Node, Express, and MongoDB, with TypeScript.
+Built with TypeScript, Node, Express, Express-Validator, and MongoDB. Hosted on Heroku.
