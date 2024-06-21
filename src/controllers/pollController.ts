@@ -1,9 +1,8 @@
-import { Option } from "../models/poll.js";
-import { Poll } from "../models/poll.js";
+import { Option, Vote } from "../types/poll.js";
+import { Poll } from "../types/poll.js";
 import db from "../db/connection.js";
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
-import { Vote } from "../models/vote.js";
 import { matchedData } from "express-validator";
 
 export async function createPoll(req: Request, res: Response) {
