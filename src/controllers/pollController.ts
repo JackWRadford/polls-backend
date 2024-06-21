@@ -7,7 +7,7 @@ import { matchedData } from "express-validator";
 
 export async function createPoll(req: Request, res: Response) {
 	// Destruct validated request data.
-	const { title, options, endsAt } = matchedData(req);
+	const { title, options, limitVotesByIp } = matchedData(req);
 
 	// Create options array with ids.
 	const optionsWithIds: Option[] = options?.map(
@@ -23,7 +23,7 @@ export async function createPoll(req: Request, res: Response) {
 		title,
 		options: optionsWithIds,
 		createdAt,
-		endsAt,
+		limitVotesByIp,
 	};
 
 	try {
@@ -180,14 +180,16 @@ export async function voteInPoll(req: Request, res: Response) {
 			return res.status(400).send({ message: "Invalid option." });
 		}
 
-		// Check for the clientIp in any existing Votes relating to the poll.
-		const voteWithClientIp = await db
-			.collection("votes")
-			.findOne({ poll_id: new ObjectId(pollId), clientIp: clientIp });
-		if (voteWithClientIp) {
-			return res.status(403).send({
-				message: "You can only vote once in this poll.",
-			});
+		// Check for the clientIp in any existing Votes relating to the poll if limitVotesByIp is true for the poll.
+		if (poll.limitVotesByIp) {
+			const voteWithClientIp = await db
+				.collection("votes")
+				.findOne({ poll_id: new ObjectId(pollId), clientIp: clientIp });
+			if (voteWithClientIp) {
+				return res.status(403).send({
+					message: "You can only vote once in this poll.",
+				});
+			}
 		}
 
 		// Create the Vote object.

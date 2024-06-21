@@ -10,7 +10,7 @@ type Poll = {
 	title: string;
 	options: Option[];
 	createdAt: Date;
-	endsAt: Date;
+	limitVotesByIp?: boolean;
 	isExample?: boolean;
 };
 

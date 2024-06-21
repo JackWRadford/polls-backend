@@ -19,10 +19,10 @@ export const validateCreatePoll = () => [
 		.isLength({ min: 1, max: 280 })
 		.withMessage("The Answers must be 1 to 180 characters in length."),
 
-	body("endAt")
+	body("limitVotesByIp")
 		.optional()
-		.isDate()
-		.withMessage("The end at date must be a Date."),
+		.isBoolean()
+		.withMessage("limitVotesByIp must be of type Boolean."),
 ];
 
 export const validateMongoIdInParams = () => [
