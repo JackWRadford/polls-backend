@@ -13,6 +13,7 @@ app.use(helmet());
 const corsOptions = {
 	origin: process.env.FRONTEND_ORIGIN,
 	optionsSuccessStatus: 200,
+	credentials: true,
 };
 app.use(cors(corsOptions));
 
