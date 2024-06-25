@@ -6,13 +6,13 @@ import {
 	getPollResults,
 	voteInPoll,
 } from "../controllers/pollController.js";
-import { checkValidationResult } from "../validation/validation.js";
+import { checkValidationResult } from "../middleware/validation/validation.js";
 import {
 	validateCreatePoll,
 	validateMongoIdInParams,
 	validatePagination,
 	validateVote,
-} from "../validation/validationChains.js";
+} from "../middleware/validation/validationChains.js";
 
 const router = express.Router();
 

@@ -1,5 +1,6 @@
 import "./loadEnv.js";
 import polls from "./routes/polls.js";
+import auth from "./routes/auth.js";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -17,8 +18,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Load the /polls routes
+// Configure routes.
 app.use("/polls", polls);
+app.use("/auth", auth);
 
 const port = process.env.PORT || 3000;
 
