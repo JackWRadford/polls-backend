@@ -1,14 +1,16 @@
-import "./loadEnv.js";
-import polls from "./routes/polls.js";
-import auth from "./routes/auth.js";
-import express from "express";
+import cookieParser from "cookie-parser";
 import cors from "cors";
+import express from "express";
 import helmet from "helmet";
+import "./loadEnv.js";
+import auth from "./routes/auth.js";
+import polls from "./routes/polls.js";
 
 const app = express();
 
 // Configure Express Middleware
 app.use(express.json());
+app.use(cookieParser());
 app.use(helmet());
 // Configure CORS
 const corsOptions = {
