@@ -4,7 +4,7 @@ import { Db } from "mongodb";
 import db from "../db/connection.js";
 import { User } from "../types/user.js";
 import generateJWT from "../utils/generateJWT.js";
-import hashPassword from "../utils/hasher.js";
+import { comparePassword, hashPassword } from "../utils/hasher.js";
 
 export const signUp = async (req: Request, res: Response) => {
 	// Destruct validated request data.
@@ -43,7 +43,7 @@ export const signUp = async (req: Request, res: Response) => {
 		const passwordHash = await hashPassword(password);
 
 		// Create new user.
-		const newUser: User = {
+		const newUser: Partial<User> = {
 			email: email,
 			username: username,
 			passwordHash: passwordHash,
@@ -69,6 +69,41 @@ export const signUp = async (req: Request, res: Response) => {
 			message: "An Error occurred while signing up.",
 		});
 	}
+};
+
+export const login = async (req: Request, res: Response) => {
+	if (!db) {
+		throw new Error("Could not connect to database.");
+	}
+	// Destruct validated request data.
+	const { email, password } = matchedData(req);
+	const emailPasswordIncorrect = {
+		message: "Your email or password was incorrect.",
+	};
+	try {
+		// Check for user with email.
+		const user = (await db
+			.collection("users")
+			.findOne({ email: email })) as User;
+		if (!user) {
+			return res.status(400).send(emailPasswordIncorrect);
+		}
+		// Check the password.
+		const passwordWasCorrect = await comparePassword(
+			password,
+			user.passwordHash
+		);
+		if (!passwordWasCorrect) {
+			return res.status(400).send(emailPasswordIncorrect);
+		}
+		// Generate JWT.
+		const jwt = generateJWT(user._id.toHexString());
+		res.cookie("token", jwt, {
+			secure: true,
+			httpOnly: false,
+		});
+		res.status(200).send({ user, message: "Login successfull." });
+	} catch (error) {}
 };
 
 const isExistingUserWith = async (

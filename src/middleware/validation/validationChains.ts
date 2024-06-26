@@ -50,18 +50,31 @@ export const validateVote = () => [
 ];
 
 export const validateSignUp = () => [
-	body("email")
-		.isString()
-		.withMessage("The email must be a string.")
-		.trim()
-		.isEmail()
-		.withMessage("The email string must be a valid email."),
 	body("username")
 		.isString()
 		.withMessage("The username must be a string.")
 		.trim()
 		.isLength({ min: 1, max: 15 })
 		.withMessage("The username must be 1 to 15 characters in length."),
+	...emailValidator(),
+	...passwordValidator(),
+];
+
+export const validateLogin = () => [
+	...emailValidator(),
+	...passwordValidator(),
+];
+
+const emailValidator = () => [
+	body("email")
+		.isString()
+		.withMessage("The email must be a string.")
+		.trim()
+		.isEmail()
+		.withMessage("The email string must be a valid email."),
+];
+
+const passwordValidator = () => [
 	body("password")
 		.isString()
 		.withMessage("The password must be a string.")
