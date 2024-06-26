@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { matchedData } from "express-validator";
 import { Db } from "mongodb";
 import db from "../db/connection.js";
-import { User } from "../types/user.js";
+import { User, UserWithoutPasswordHash } from "../types/user.js";
 import generateJWT from "../utils/generateJWT.js";
 import { comparePassword, hashPassword } from "../utils/hasher.js";
 
@@ -53,7 +53,11 @@ export const signUp = async (req: Request, res: Response) => {
 		// Insert new user.
 		const result = await db.collection("users").insertOne(newUser);
 		const userId = result.insertedId;
-		const user = await db.collection("users").findOne({ _id: userId });
+		const user = (await db
+			.collection("users")
+			.findOne({ _id: userId })) as User;
+
+		const userWithoutPasswordHash = removePasswordHash(user);
 
 		// Generate JWT.
 		// The hex string representation of the ObjectId is always 24 characters long.
@@ -62,7 +66,10 @@ export const signUp = async (req: Request, res: Response) => {
 			secure: true,
 			httpOnly: false,
 		});
-		res.status(201).send({ user, message: "Signed Up successfully." });
+		res.status(201).send({
+			userWithoutPasswordHash,
+			message: "Signed Up successfully.",
+		});
 	} catch (error) {
 		console.error("Error occurred while signing up:", error);
 		res.status(500).send({
@@ -96,14 +103,25 @@ export const login = async (req: Request, res: Response) => {
 		if (!passwordWasCorrect) {
 			return res.status(400).send(emailPasswordIncorrect);
 		}
+
+		const userWithoutPasswordHash = removePasswordHash(user);
+
 		// Generate JWT.
 		const jwt = generateJWT(user._id.toHexString());
 		res.cookie("token", jwt, {
 			secure: true,
 			httpOnly: false,
 		});
-		res.status(200).send({ user, message: "Login successfull." });
-	} catch (error) {}
+		res.status(200).send({
+			userWithoutPasswordHash,
+			message: "Login successfull.",
+		});
+	} catch (error) {
+		console.error("Error occurred while logging in:", error);
+		res.status(500).send({
+			message: "An Error occurred while logging in.",
+		});
+	}
 };
 
 const isExistingUserWith = async (
@@ -116,4 +134,9 @@ const isExistingUserWith = async (
 		.findOne({ [property]: value });
 	if (userWithEmail) return true;
 	return false;
+};
+
+const removePasswordHash = (user: User): UserWithoutPasswordHash => {
+	const { passwordHash, ...userWithoutPasswordHash } = user;
+	return userWithoutPasswordHash;
 };

@@ -7,3 +7,5 @@ export type User = {
 	passwordHash: string;
 	createdAt: Date;
 };
+
+export type UserWithoutPasswordHash = Omit<User, "passwordHash">;
