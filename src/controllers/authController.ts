@@ -3,8 +3,8 @@ import { matchedData } from "express-validator";
 import { Db } from "mongodb";
 import db from "../db/connection.js";
 import { User, UserWithoutPasswordHash } from "../types/user.js";
-import generateJWT from "../utils/generateJWT.js";
 import { comparePassword, hashPassword } from "../utils/hasher.js";
+import { generateJWT } from "../utils/jwtUtils.js";
 
 export const signUp = async (req: Request, res: Response) => {
 	// Destruct validated request data.

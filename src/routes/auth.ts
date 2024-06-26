@@ -1,10 +1,10 @@
 import express from "express";
+import { login, signUp } from "../controllers/authController.js";
+import { checkValidationResult } from "../middleware/validationMiddleware/validation.js";
 import {
 	validateLogin,
 	validateSignUp,
-} from "../middleware/validation/validationChains.js";
-import { checkValidationResult } from "../middleware/validation/validation.js";
-import { login, signUp } from "../controllers/authController.js";
+} from "../middleware/validationMiddleware/validationChains.js";
 
 const router = express.Router();
 
