@@ -96,6 +96,41 @@ export async function getMyPolls(req: Request, res: Response) {
 	}
 }
 
+export async function deletePoll(req: Request, res: Response) {
+	const { id } = matchedData(req);
+
+	// Create a ObjectId from the userId.
+	const userId = req.userId ? new ObjectId(req.userId) : undefined;
+	if (!userId) {
+		return res.status(401).send({ message: "Access Denied" });
+	}
+
+	if (!db) {
+		throw new Error();
+	}
+
+	try {
+		const pollId = new ObjectId(id as string);
+		const deleteResult = await db
+			.collection("polls")
+			.deleteOne({ _id: pollId, user_id: userId });
+
+		if (deleteResult.deletedCount === 0) {
+			return res.status(404).send({
+				message:
+					"The poll was not found or you do not have authorisation to delete it.",
+			});
+		}
+
+		res.status(200).send({ message: "Poll delete succeded" });
+	} catch (error) {
+		console.error("deletePoll error:", error);
+		res.status(500).send({
+			message: "An error occured while deleting the poll.",
+		});
+	}
+}
+
 export async function getExamplePolls(req: Request, res: Response) {
 	let { page, pageSize } = matchedData(req);
 	pageSize = parseInt(pageSize, 10);

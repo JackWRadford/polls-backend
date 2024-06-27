@@ -1,6 +1,7 @@
 import express from "express";
 import {
 	createPoll,
+	deletePoll,
 	getExamplePolls,
 	getMyPolls,
 	getPoll,
@@ -63,6 +64,13 @@ router.post(
 	validateVote(),
 	checkValidationResult,
 	voteInPoll
+);
+router.post(
+	"/:id/delete",
+	authenticateJWT,
+	validateMongoIdInParams(),
+	checkValidationResult,
+	deletePoll
 );
 
 export default router;
