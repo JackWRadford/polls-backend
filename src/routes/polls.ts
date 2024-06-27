@@ -2,6 +2,7 @@ import express from "express";
 import {
 	createPoll,
 	getExamplePolls,
+	getMyPolls,
 	getPoll,
 	getPollResults,
 	voteInPoll,
@@ -13,17 +14,27 @@ import {
 	validatePagination,
 	validateVote,
 } from "../middleware/validationMiddleware/validationChains.js";
-import { optionalAuthenticateJWT } from "../middleware/authMiddleware.js";
+import {
+	authenticateJWT,
+	optionalAuthenticateJWT,
+} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Routes
+// Routes.
 router.post(
 	"/create",
 	optionalAuthenticateJWT,
 	validateCreatePoll(),
 	checkValidationResult,
 	createPoll
+);
+router.get(
+	"/my-polls",
+	authenticateJWT,
+	validatePagination(),
+	checkValidationResult,
+	getMyPolls
 );
 router.get(
 	"/examples",

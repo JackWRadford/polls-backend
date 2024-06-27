@@ -62,6 +62,40 @@ export async function getPoll(req: Request, res: Response) {
 	}
 }
 
+export async function getMyPolls(req: Request, res: Response) {
+	let { page, pageSize } = matchedData(req);
+	pageSize = parseInt(pageSize, 10);
+	page = parseInt(page, 10);
+
+	// Create a ObjectId from the userId.
+	const userId = req.userId ? new ObjectId(req.userId) : undefined;
+	if (!userId) {
+		return res.status(401).send({ message: "Access Denied" });
+	}
+
+	if (!db) {
+		throw new Error();
+	}
+
+	try {
+		const polls = await db
+			.collection("polls")
+			.find({ user_id: userId })
+			.sort({ createdAt: -1 })
+			.skip((page - 1) * pageSize)
+			.limit(pageSize)
+			.toArray();
+
+		const thereAreMorePolls = polls?.length == pageSize;
+		res.status(200).send({ polls, thereAreMorePolls });
+	} catch (error) {
+		console.error("getMyPolls error:", error);
+		res.status(500).send({
+			message: "An Error occured while fetching your polls.",
+		});
+	}
+}
+
 export async function getExamplePolls(req: Request, res: Response) {
 	let { page, pageSize } = matchedData(req);
 	pageSize = parseInt(pageSize, 10);
