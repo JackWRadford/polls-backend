@@ -113,7 +113,7 @@ export const login = async (req: Request, res: Response) => {
 			httpOnly: false,
 		});
 		res.status(200).send({
-			userWithoutPasswordHash,
+			user: userWithoutPasswordHash,
 			message: "Login successfull.",
 		});
 	} catch (error) {
