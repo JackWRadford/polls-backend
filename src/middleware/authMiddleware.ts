@@ -15,11 +15,30 @@ export const authenticateJWT = async (
 	try {
 		// Verify the JWT.
 		const decodedToken = await verifyJWT(token);
-		req.body.userId = decodedToken.id;
+		req.userId = decodedToken.id;
 		next();
 	} catch (error) {
 		return res
 			.status(401)
 			.send({ message: "Failed to authenticate token." });
 	}
+};
+
+export const optionalAuthenticateJWT = async (
+	req: Request,
+	_: Response,
+	next: NextFunction
+) => {
+	const token = req.headers.authorization;
+
+	if (token) {
+		try {
+			const decodedToken = await verifyJWT(token);
+			req.userId = decodedToken.id;
+		} catch (error) {
+			console.error("JWT verification failed:", error);
+		}
+	}
+
+	next();
 };

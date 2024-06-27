@@ -7,6 +7,7 @@ type Option = {
 
 type Poll = {
 	_id: ObjectId;
+	user_id: ObjectId;
 	title: string;
 	options: Option[];
 	createdAt: Date;
@@ -16,6 +17,7 @@ type Poll = {
 
 type Vote = {
 	_id: ObjectId;
+	user_id: ObjectId;
 	poll_id: ObjectId;
 	optionId: string;
 	createdAt: Date;
