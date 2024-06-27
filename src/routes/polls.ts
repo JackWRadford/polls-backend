@@ -13,26 +13,41 @@ import {
 	validatePagination,
 	validateVote,
 } from "../middleware/validationMiddleware/validationChains.js";
+import { optionalAuthenticateJWT } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // Routes
-router.post("/create", validateCreatePoll(), checkValidationResult, createPoll);
+router.post(
+	"/create",
+	optionalAuthenticateJWT,
+	validateCreatePoll(),
+	checkValidationResult,
+	createPoll
+);
 router.get(
 	"/examples",
 	validatePagination(),
 	checkValidationResult,
 	getExamplePolls
 );
-router.get("/:id", validateMongoIdInParams(), checkValidationResult, getPoll);
+router.get(
+	"/:id",
+	optionalAuthenticateJWT,
+	validateMongoIdInParams(),
+	checkValidationResult,
+	getPoll
+);
 router.get(
 	"/:id/results",
+	optionalAuthenticateJWT,
 	validateMongoIdInParams(),
 	checkValidationResult,
 	getPollResults
 );
 router.post(
 	"/:id/vote",
+	optionalAuthenticateJWT,
 	validateMongoIdInParams(),
 	validateVote(),
 	checkValidationResult,

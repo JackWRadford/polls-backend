@@ -19,7 +19,15 @@ export const generateJWT = (id: string): string => {
 
 export const verifyJWT = (token: string): Promise<JwtUserPayload> => {
 	return new Promise((resolve, reject) => {
-		jwt.verify(token, jwtSecretKey, (err, decoded) => {
+		let extractedToken = token;
+		// Check that the token is a Bearer token.
+		if (token.startsWith("Bearer ")) {
+			// Extract the token.
+			extractedToken = token.slice(7, token.length);
+		}
+
+		// Verifyt the token.
+		jwt.verify(extractedToken, jwtSecretKey, (err, decoded) => {
 			if (err) {
 				reject(err);
 			} else {

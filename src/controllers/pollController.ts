@@ -17,9 +17,13 @@ export async function createPoll(req: Request, res: Response) {
 		})
 	);
 
+	// Create a ObjectId from the userId if the user was authenticated.
+	const userId = req.userId ? new ObjectId(req.userId) : undefined;
+
 	// Create the poll object.
 	const createdAt = new Date();
 	const document: Partial<Poll> = {
+		user_id: userId,
 		title,
 		options: optionsWithIds,
 		createdAt,
