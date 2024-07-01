@@ -9,9 +9,12 @@ export function checkValidationResult(
 	const validationRes = validationResult(req);
 	// Check that the request is valid.
 	if (!validationRes.isEmpty()) {
-		console.error(validationRes.array());
+		const errors = validationRes.array();
+		console.error(errors);
+		const errorMessage =
+			errors.length > 0 ? errors[0].msg : "Invalid request.";
 		return res.status(400).send({
-			message: "Invalid request.",
+			message: errorMessage,
 			errors: validationRes.array(),
 		});
 	}
