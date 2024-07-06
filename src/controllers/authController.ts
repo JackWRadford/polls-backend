@@ -128,6 +128,20 @@ export const login = async (req: Request, res: Response) => {
 	}
 };
 
+export const logout = async (req: Request, res: Response) => {
+	try {
+		res.clearCookie("token");
+		res.status(200).send({
+			message: "Logged out successfully.",
+		});
+	} catch (error) {
+		console.error("Error while logging out:", error);
+		res.status(500).send({
+			message: "An Error occurred while logging out.",
+		});
+	}
+};
+
 export const me = async (req: Request, res: Response) => {
 	if (!db) {
 		throw new Error("Could not connect to database.");
