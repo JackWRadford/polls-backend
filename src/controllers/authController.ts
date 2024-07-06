@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { matchedData } from "express-validator";
-import { Db } from "mongodb";
+import { Db, ObjectId } from "mongodb";
 import db from "../db/connection.js";
 import { User, UserWithoutPasswordHash } from "../types/user.js";
 import { comparePassword, hashPassword } from "../utils/hasher.js";
@@ -124,6 +124,38 @@ export const login = async (req: Request, res: Response) => {
 		console.error("Error occurred while logging in:", error);
 		res.status(500).send({
 			message: "An Error occurred while logging in.",
+		});
+	}
+};
+
+export const me = async (req: Request, res: Response) => {
+	if (!db) {
+		throw new Error("Could not connect to database.");
+	}
+
+	try {
+		// Create a ObjectId from the userId if the user was authenticated.
+		const userId = req.userId ? new ObjectId(req.userId) : undefined;
+
+		// Fetch the user.
+		const user = (await db
+			.collection("users")
+			.findOne({ _id: userId })) as User;
+
+		if (!user) {
+			return res.status(400).send("Could not find user.");
+		}
+
+		const userWithoutPasswordHash = removePasswordHash(user);
+
+		res.status(200).send({
+			user: userWithoutPasswordHash,
+			message: "User fetched successfully.",
+		});
+	} catch (error) {
+		console.error("Error occurred while fetching user:", error);
+		res.status(500).send({
+			message: "An Error occurred while fetching the user.",
 		});
 	}
 };
