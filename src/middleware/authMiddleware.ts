@@ -7,7 +7,7 @@ export const authenticateJWT = async (
 	next: NextFunction
 ) => {
 	// Get the JWT.
-	const token = req.headers.authorization;
+	const token = req.cookies.token;
 	if (!token) {
 		return res.status(401).send({ message: "Access denied." });
 	}
@@ -29,7 +29,7 @@ export const optionalAuthenticateJWT = async (
 	_: Response,
 	next: NextFunction
 ) => {
-	const token = req.headers.authorization;
+	const token = req.cookies.token;
 
 	if (token) {
 		try {

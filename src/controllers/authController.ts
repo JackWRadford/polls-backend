@@ -64,7 +64,9 @@ export const signUp = async (req: Request, res: Response) => {
 		const jwt = generateJWT(userId.toHexString());
 		res.cookie("token", jwt, {
 			secure: true,
-			httpOnly: false,
+			httpOnly: true,
+			maxAge: 30 * 24 * 60 * 60 * 1000,
+			sameSite: "strict",
 		});
 		res.status(201).send({
 			userWithoutPasswordHash,
@@ -110,7 +112,9 @@ export const login = async (req: Request, res: Response) => {
 		const jwt = generateJWT(user._id.toHexString());
 		res.cookie("token", jwt, {
 			secure: true,
-			httpOnly: false,
+			httpOnly: true,
+			maxAge: 30 * 24 * 60 * 60 * 1000,
+			sameSite: "strict",
 		});
 		res.status(200).send({
 			user: userWithoutPasswordHash,
