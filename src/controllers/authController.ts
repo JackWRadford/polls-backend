@@ -66,7 +66,6 @@ export const signUp = async (req: Request, res: Response) => {
 			secure: true,
 			httpOnly: true,
 			maxAge: 30 * 24 * 60 * 60 * 1000,
-			sameSite: "lax",
 		});
 		res.status(201).send({
 			userWithoutPasswordHash,
@@ -114,7 +113,6 @@ export const login = async (req: Request, res: Response) => {
 			secure: true,
 			httpOnly: true,
 			maxAge: 30 * 24 * 60 * 60 * 1000,
-			sameSite: "lax",
 		});
 		res.status(200).send({
 			user: userWithoutPasswordHash,
