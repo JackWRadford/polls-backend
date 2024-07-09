@@ -174,6 +174,40 @@ export const me = async (req: Request, res: Response) => {
 	}
 };
 
+export const deleteUserAndPolls = async (req: Request, res: Response) => {
+	if (!db) {
+		throw new Error("Could not connect to database.");
+	}
+
+	try {
+		// Create a ObjectId from the userId if the user was authenticated.
+		const userId = req.userId ? new ObjectId(req.userId) : undefined;
+
+		// Delete polls created by the user.
+		const deletePollsResult = await db
+			.collection("polls")
+			.deleteMany({ user_id: userId });
+
+		// Delete the user.
+		const deleteUserResult = await db
+			.collection("users")
+			.deleteOne({ _id: userId });
+
+		if (deleteUserResult.deletedCount <= 0) {
+			return res.status(400).send("Could not delete your account.");
+		}
+
+		res.status(200).send({
+			message: "Account deleted successfully.",
+		});
+	} catch (error) {
+		console.error("Error occurred while deleting user:", error);
+		res.status(500).send({
+			message: "An Error occurred while deleting your account.",
+		});
+	}
+};
+
 const isExistingUserWith = async (
 	property: string,
 	value: string,
