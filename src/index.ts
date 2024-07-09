@@ -21,8 +21,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Configure routes.
-app.use("/polls", polls);
-app.use("/auth", auth);
+app.use("/api/polls", polls);
+app.use("/api/auth", auth);
 
 const port = process.env.PORT || 3000;
 
