@@ -1,16 +1,16 @@
 import express from "express";
 import {
-	deleteUserAndPolls,
-	login,
-	logout,
-	me,
-	signUp,
+  deleteUserAndPolls,
+  login,
+  logout,
+  me,
+  signUp,
 } from "../controllers/authController.js";
 import { authenticateJWT } from "../middleware/authMiddleware.js";
 import { checkValidationResult } from "../middleware/validationMiddleware/validation.js";
 import {
-	validateLogin,
-	validateSignUp,
+  validateLogin,
+  validateSignUp,
 } from "../middleware/validationMiddleware/validationChains.js";
 
 const router = express.Router();

@@ -1,27 +1,27 @@
 import { ObjectId } from "mongodb";
 
 type Option = {
-	id: string;
-	title: string;
+  id: string;
+  title: string;
 };
 
 type Poll = {
-	_id: ObjectId;
-	user_id?: ObjectId;
-	title: string;
-	options: Option[];
-	createdAt: Date;
-	limitVotesByIp?: boolean;
-	isExample?: boolean;
+  _id: ObjectId;
+  user_id?: ObjectId;
+  title: string;
+  options: Option[];
+  createdAt: Date;
+  limitVotesByIp?: boolean;
+  isExample?: boolean;
 };
 
 type Vote = {
-	_id: ObjectId;
-	user_id?: ObjectId;
-	poll_id: ObjectId;
-	optionId: string;
-	createdAt: Date;
-	clientIp?: string;
+  _id: ObjectId;
+  user_id?: ObjectId;
+  poll_id: ObjectId;
+  optionId: string;
+  createdAt: Date;
+  clientIp?: string;
 };
 
 export { Poll, Option, Vote };
