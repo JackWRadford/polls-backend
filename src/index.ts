@@ -14,9 +14,9 @@ app.use(cookieParser());
 app.use(helmet());
 // Configure CORS
 const corsOptions = {
-	origin: process.env.FRONTEND_ORIGIN,
-	optionsSuccessStatus: 200,
-	credentials: true,
+  origin: process.env.FRONTEND_ORIGIN,
+  optionsSuccessStatus: 200,
+  credentials: true,
 };
 app.use(cors(corsOptions));
 
@@ -27,7 +27,7 @@ app.use("/api/auth", auth);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-	console.log(`Server listening at port: ${port}`);
+  console.log(`Server listening at port: ${port}`);
 });
 
 export default app;

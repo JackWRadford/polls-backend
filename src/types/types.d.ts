@@ -1,7 +1,7 @@
 import { Request } from "express";
 
 declare module "express-serve-static-core" {
-	interface Request {
-		userId?: string; // May be set for authenticated users.
-	}
+  interface Request {
+    userId?: string; // May be set for authenticated users.
+  }
 }
